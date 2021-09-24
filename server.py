@@ -34,17 +34,10 @@ class MyWebServer(socketserver.BaseRequestHandler):
         self.data = self.request.recv(1024).strip()
         # print ("Got a request of: %s\n" % self.data)
 
-        # brainstorming
-        # find the path to this file (server) + "/www"
-        # find path to .html and .css files ( + base.css or + /hardcore/index.html)
-        # send status message = HTTP/1.1 200 OK < .... + open(file).read()
-
-        statusMsg = "temp" # placeholder for the status message. Will be changed based on request
+        statusMsg = "" # placeholder for the status message. Will be changed based on request
 
         fileName = self.data.split()[1].decode("utf-8") # this will get the file we want to find in www (i.e base.css, index.html or nothing)
-        wwwwFolder = os.getcwd() + "/www" 
-
-        path = wwwwFolder + fileName # note: path can end with /
+        path = os.getcwd() + "/www"  + fileName # note: path can end with /
 
         # checking the path
         if os.path.isfile(path): # if it is a file
@@ -62,6 +55,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     statusMsg = "HTTP/1.1 200 OK\r\nContent-Type: text/css; charset=UTF-8\r\n\r\n" + open(path).read()
             else: #path not found
                 statusMsg = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n"
+                
         # if it is a path
         elif os.path.isdir(path) and os.path.isfile(path + "index.html"):
             # handling code 405
